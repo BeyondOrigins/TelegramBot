@@ -38,10 +38,11 @@ async def help_command(message : types.Message):
 # обработчик сообщений
 @dp.message_handler()
 async def on_message(message : types.Message):
-    if message.from_user.type == "private":
+    if message.chat.type == "private":
         await bot.send_message(chat_id=message.from_user.id,
                                text="Запись рассматривается, ждите")
-        await bot.send_message(chat_id=config.ARCHITECTOR) # отправить запись автору канала
+        await bot.send_message(chat_id=config.ARCHITECTOR,
+                               text=message.text) # отправить запись автору канала
 
 if __name__ == "__main__":
     executor.start_polling(dp, on_startup=on_startup, skip_updates=True)
