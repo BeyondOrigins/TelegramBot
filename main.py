@@ -2,17 +2,10 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.types import ReplyKeyboardRemove
-import config
+import config, keyboards
 
 bot = Bot(config.TOKEN) # создание экземлпяра класса Bot
 dp = Dispatcher(bot) # создание диспетчера
-
-kb = ReplyKeyboardMarkup(
-    keyboard = [
-        [KeyboardButton(text="/help")]
-    ],
-    resize_keyboard=True
-)
 
 async def on_startup(*args, **kwargs):
     print("DEBUGGED SUCCESSFULLY")
@@ -26,7 +19,7 @@ async def start(message : types.Message):
     await bot.send_message(chat_id=message.from_user.id,
                            text=config.START_COMMAND_TEXT,
                            parse_mode="HTML",
-                           reply_markup=kb)
+                           reply_markup=keyboards.kb)
 
 # комманда /help
 @dp.message_handler(commands=['help'])
