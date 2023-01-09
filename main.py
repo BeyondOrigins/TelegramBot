@@ -1,7 +1,4 @@
-from aiogram import Bot, Dispatcher, executor, types
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.types import ReplyKeyboardRemove
+from imports import *
 import config, keyboards
 
 bot = Bot(config.TOKEN) # создание экземлпяра класса Bot
@@ -35,7 +32,19 @@ async def on_message(message : types.Message):
         await bot.send_message(chat_id=message.from_user.id,
                                text="Запись рассматривается, ждите")
         await bot.send_message(chat_id=config.ARCHITECTOR,
-                               text=message.text) # отправить запись автору канала
+                               text=message.text,
+                               reply_markup=keyboards.estimate_kb) # отправить запись автору канала
+
+@dp.callback_query_handler(lambda callback_query: callback_query.data.startswith("post"))
+async def callback_processing(callback : types.CallbackQuery):
+    if callback == "post_accepted":
+        await bot.send_message(chat_id=callback.message.from_user.id,
+                               text="Партия одобрять! Запись принята")
+        await bot.send_message(chat_id=config.CHANNEL_ID,
+                               text=callback.message.text)
+    else:
+        await bot.send_message(chat_id=callback.message.from_user.id,
+                               text="Партия не одобрять! Запись отклонена")
 
 if __name__ == "__main__":
     executor.start_polling(dp, on_startup=on_startup, skip_updates=True)
